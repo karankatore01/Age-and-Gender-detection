@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Age and Gender Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Age and Gender Detection</h1>
+      <h3>Upload your image to get started!</h3>
+      <form method="POST" action="/" enctype="multipart/form-data" id="upload-form">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Predict</button>
+      </form>
+      <div id="result" class="hidden">
+        <h3>Prediction Results:</h3>
+        <p id="gender"></p>
+        <p id="age"></p>
+      </div>
+    </div>
+    <script>
+      document.getElementById('upload-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            document.getElementById('gender').textContent = 'Gender: ' + response.gender;
+            document.getElementById('age').textContent = 'Age: ' + response.age;
+            document.getElementById('result').classList.remove('hidden');
+          }
+        };
+        xhr.open('POST', '/');
+        xhr.send(formData);
+      });
+    </script>
+  </body>
+</html>
